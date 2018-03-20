@@ -19,7 +19,7 @@ script:
   - cmake .. && make
   - make test
    # Codecov
-  - ./get_code_cov
+  - ../get_code_cov
   - codecov
 after_success:
   # Codecov
