@@ -4,6 +4,7 @@ project(langford_godfrey)
 
 if(COVERAGE)
     add_definitions( -fprofile-arcs -ftest-coverage )
+    link_libraries( gcov )
 endif(COVERAGE)
 
 enable_testing()
