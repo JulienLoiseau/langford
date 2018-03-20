@@ -1,3 +1,5 @@
+dist: trusty
+sudo: required
 language: cpp
 before_install:
   # C++14
@@ -31,3 +33,6 @@ addons:
 script:
   # other script steps might be done before running the actual analysis
   - sonar-scanner
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
