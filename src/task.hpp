@@ -10,6 +10,14 @@
 #include "big_integers.hpp"
 #include "gray.hpp"
 
+
+/**
+ * Representation of a task.
+ * @tparam T The type for big integers
+ * @tparam D The dimension of big integers
+ * @tparam NBC The number of colors to consider
+ * @tparam TS The task size
+ */
 template<
         typename T,
         size_t D,
@@ -43,29 +51,33 @@ private:
 
 public:
 
+    /**
+     * @brief Construct a task base on the task ID
+     * @param num_task The task ID, read bit by bit to create evaluation
+     */
     explicit task(
             long long num_task = 0LL)
     {
-
         /* Set x1 = x2 = 1 */
         evaluation_[0] = 1;
         evaluation_[1] = 1;
-
         /* Init the member of the tasks */
         init_task(num_task);
-
         /* Init the terms of this task */
         init_terms();
-
         /* Reset gray */
         g_.reset();
-        //std::cout << 0 << "=" << g_.get_current() << ": " << *this << std::endl;
-
     }
 
     ~task() = default;
 
 
+    /**
+     * @brief Initiate the task regarding the task number provided
+     * Set the evaluation values:
+     * Read bit by bit: 1 = -1 and 0 = 1
+     * @param num_task The number of the task
+     */
     void
     init_task(
             long long num_task )
@@ -99,6 +111,10 @@ public:
         }
     }
 
+    /**
+     * @brief Return the current result in sumTask_
+     * @return sumTask_
+     */
     big_int get_result() const
     {
         return sumTask_;
@@ -111,8 +127,6 @@ public:
     void evolve_evaluation(
             int index)
     {
-
-        //std::cout<<"EVAL: index="<<index<<std::endl;
         /* The index cannot addresses the two first positions due to symmetry
          * optimization */
         assert(index > 1);
@@ -124,155 +138,48 @@ public:
 
         evaluation_[index] *= -1;
 
-
-#if 0
-        /* First term
+        /* First term symmetry
          * x1.x3 + ... + x(n-1).x(n+1) */
-        if(index < nb_colors - 2){
+        if(index < nb_colors-1){
+            assert(index-2>-1);
             terms_[0] += (2-nb_colors % 2) * evaluation_[index] *
                     (evaluation_[index-2] + evaluation_[index+2]);
-            std::cout<<"AA term["<<0<<"]="<<"("<<index-2<<"-"<<index<<") && ("<<index<<"-"<<index+2<<")"<<std::endl;
         }else{
             /* Do not consider the right side for symmetry */
-            if(index < nb_colors){
+            if(index < nb_colors+1){
                 terms_[0] += (2 - nb_colors % 2) *
                         evaluation_[index-2]*evaluation_[index];
-                std::cout<<"BB term["<<0<<"]="<<"("<<index-2<<"-"<<index<<")"<<std::endl;
             }
         }
-        if(nb_colors % 2 == 0){
-            must_multiply = terms_[0] != 0;
-        }
-#endif
+        //if(nb_colors % 2 == 0){
+        //    must_multiply = terms_[0] != 0;
+        //}
 
         /* Even terms */
-        for(int i = 0; i < nb_colors; i+=1){
-            int min = index - i - 2;
-            int max = index + i + 2;
-            if(min > -1){
-                terms_[i] += 2 * evaluation_[index] * evaluation_[min];
-                //std::cout<<"EMin term["<<i<<"]="<<"("<<min<<"-"<<index<<")"<<std::endl;
-            }
-            if(max < nb_cubes){
-                terms_[i] += 2 * evaluation_[index] * evaluation_[max];
-                //std::cout<<"EMax term["<<i<<"]="<<"("<<index<<"-"<<max<<")"<<std::endl;
-
-            }
-            must_multiply = must_multiply && (terms_[i] != 0);
-        }
-
-#if 0
-        /* Odd terms */
         for(int i = 1; i < nb_colors; i+=2){
             int min = index - i - 2;
             int max = index + i + 2;
             if(min > -1){
-                terms_[i] += evaluation_[index] * evaluation_[min];
-                std::cout<<"OMin term["<<i<<"]="<<"("<<min<<"-"<<index<<")"<<std::endl;
+                terms_[i] += 2 * evaluation_[index] * evaluation_[min];
+            }
+            if(max < nb_cubes){
+                terms_[i] += 2 * evaluation_[index] * evaluation_[max];
+            }
+            //must_multiply = must_multiply && (terms_[i] != 0);
+        }
 
+        /* Odd terms */
+        for(int i = 2; i < nb_colors; i+=2){
+            int min = index - i - 2;
+            int max = index + i + 2;
+            if(min > -1){
+                terms_[i] += evaluation_[index] * evaluation_[min];
             }
             if(max < nb_cubes){
                 terms_[i] += evaluation_[index] * evaluation_[max];
-                std::cout<<"OMax term["<<i<<"]="<<"("<<index<<"-"<<max<<")"<<std::endl;
             }
-            must_multiply = must_multiply && (terms_[i] != 0);
+            //must_multiply = must_multiply && (terms_[i] != 0);
         }
-#endif
-
-#if 0
-
-        /* If we are in the low part of positions */
-        /* nb_colors = 4
-         * nb_cubes = 8
-        /* evaluation =  0 1 2 3 4 5 6 7
-        /* terms =       0 1 2 3 */
-        if(index < nb_colors) {
-            max1 = index - 2;
-            if (index >= nb_colors - 2) {
-                max2 = 2 * nb_colors - index - 3;
-            }
-
-            std::cout<<"index<nb_colors"<<std::endl<<"max1="<<max1<<" max2="<<max2<<std::endl;
-
-            /* Other terms */
-            /* Even pairs */
-            /* Case 1: Left and Right */
-            for (int i = 1; i <= max1; i += 2) {
-                terms_[i] += 2 * evaluation_[index] *
-                            (evaluation_[index - i - 2] +
-                             evaluation_[index + i + 2]);
-                std::cout<<"A term["<<i<<"]="<<"("<<index-i-2<<"-"<<index<<") && ("<<index<<"-"<<index+i+2<<")"<<std::endl;
-            }
-            for (int i = max1 + 1; i <= max2; i += 2) {
-                terms_[i] += 2 *
-                        evaluation_[index] * evaluation_[index + i + 2];
-                std::cout<<"B term["<<i<<"]="<<index<<"-"<<index+i+2<<")"<<std::endl;
-            }
-
-            /* Odd pairs */
-            for (int i = 2; i <= max1; i += 2) {
-                terms_[i] += evaluation_[index] *
-                            (evaluation_[index - i - 2] +
-                             evaluation_[index + i + 2]);
-                must_multiply = must_multiply && (terms_[i] != 0);
-                std::cout<<"C term["<<i<<"]="<<"("<<index-i-2<<"-"<<index<<") && ("<<index<<"-"<<index+i+2<<")"<<std::endl;
-            }
-            for (int i = max1 + 2; i <= max2; i += 2) {
-                terms_[i] += evaluation_[index] * evaluation_[index + i + 2];
-                std::cout<<"D term["<<i<<"]="<<index<<"-"<<index+i+2<<")"<<std::endl;
-                must_multiply = must_multiply && (terms_[i] != 0);
-            }
-
-            for (int i = max2 + 1; i <= nb_colors; i += 2) {
-                must_multiply = must_multiply && (terms_[i] != 0);
-            }
-
-        }else{ /* index >=  nb_colors */
-            max1 = nb_cubes - index - 3;
-            if(index <= nb_colors + 2){
-                max2 = index - 3;
-            }else if(index >= 2 * nb_colors - 1){
-                max1 = 0;
-            }
-
-            std::cout<<"index>nb_colors"<<std::endl<<"max1="<<max1<<" max2="<<max2<<std::endl;
-
-            /* Other terms */
-            /* Even terms */
-            for(int i = 1; i <= max1; i+= 2){
-                terms_[i] += 2 * evaluation_[index] *
-                        (evaluation_[index-i-1] + evaluation_[index +i + 2]);
-                std::cout<<"A term["<<i<<"]="<<"("<<index-i-2<<"-"<<index<<") && ("<<index<<"-"<<index+i+2<<")"<<std::endl;
-
-            }
-            for(int i = max1 + 1; i <= max2; i += 2){
-                terms_[i] += 2*evaluation_[index-i-2]*evaluation_[index];
-                std::cout<<"B term["<<i<<"]="<<"("<<index-i-2<<"-"<<index<<")"<<std::endl;
-
-            }
-            /* Odd terms */
-            for (int i = 2; i <= max1; i += 2) {
-                terms_[i] += evaluation_[index] *
-                            (evaluation_[index - i - 2] +
-                             evaluation_[index + i + 2]);
-                must_multiply = must_multiply && (terms_[i] != 0);
-                std::cout<<"C term["<<i<<"]="<<"("<<index-i-2<<"-"<<index<<") && ("<<index<<"-"<<index+i+2<<")"<<std::endl;
-
-            }
-            for (int i = max1 + 2; i <= max2; i += 2) {
-                terms_[i] += evaluation_[index-i-2]
-                             * evaluation_[index];
-                must_multiply = must_multiply && (terms_[i] != 0);
-                std::cout<<"D term["<<i<<"]="<<"("<<index-i-2<<"-"<<index<<")"<<std::endl;
-
-            }
-
-            for (int i = max2 + 1; i <= nb_colors; i += 2) {
-                must_multiply = must_multiply && (terms_[i] != 0);
-            }
-        }
-
-#endif
 
         /* Product with the sign and adding */
         sign_ = -sign_;
@@ -288,6 +195,10 @@ public:
 
 private:
 
+    /**
+     * @brief Initiate the terms regarding the current evaluation
+     * Compute all the terms
+     */
     void init_terms()
     {
         bool must_multiply;
@@ -297,12 +208,12 @@ private:
         for(int i = 0; i < nb_colors - 2; ++i){
             terms_[0] += evaluation_[i] * evaluation_[i+2];
         }
-        //if(nb_colors % 2 == 0){
-        //    terms_[0] >>= 1;
-        //    must_multiply = (terms_[0] != 0);
-        //}else{
+        if(nb_colors % 2 == 0){
+            terms_[0] >>= 1;
+            must_multiply = (terms_[0] != 0);
+        }else{
             must_multiply = true;
-        //}
+        }
 
         /* Next terms, continue all over */
         for(int i = 1; i < nb_colors; ++i){
@@ -310,10 +221,10 @@ private:
             for(int j = 0; j < nb_cubes - i - 2; ++j){
                 terms_[i] += evaluation_[j] * evaluation_[j+i+2];
             }
-            //if(i%2 == 0){
-            //    terms_[i] >>= 1;
-            //    must_multiply = must_multiply && (terms_[i] != 0);
-            //}
+            if(i%2 == 0){
+                terms_[i] >>= 1;
+                must_multiply = must_multiply && (terms_[i] != 0);
+            }
         }
 
         /* Handle the sign */
@@ -336,6 +247,12 @@ private:
         }
     };
 
+    /**
+     * @brief Output format for the the current task
+     * @param os The output stream
+     * @param ts The current task
+     * @return Output stream describing the task with the evaluation and terms
+     */
     friend std::ostream& operator<<(
             std::ostream& os, const task& ts)
     {

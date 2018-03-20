@@ -247,6 +247,13 @@ public:
         return true;
     }
 
+    /**
+     * @brief Output the big integer in base 10
+     * Convertion is done from BASE to base 1024, base 1000 and then base 10
+     * @param os The output stream
+     * @param bi The big integer to display
+     * @return The output stream
+     */
     friend  std::ostream& operator<<(
             std::ostream& os,
             const big_integer& bi
@@ -317,6 +324,9 @@ public:
         return os;
     }
 
+    /**
+     * @brief Display interesting data for the big integer
+     */
     void info(){
         std::cout << "big_integer: [ ";
         for(auto val: array_){
