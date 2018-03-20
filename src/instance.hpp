@@ -44,7 +44,19 @@ public:
         task_t t;
         t.compute();
         result = t.get_result();
-        result.division(nb_colors * 2 - 3);
+        if(nb_colors == 3){
+            result.division(nb_colors * 2 - 4);
+        }else if(nb_colors == 4){
+            result.division(nb_colors * 2 - 3);
+        }else if(nb_colors == 7){
+            result.division(nb_colors * 2 - 6);
+        }else if(nb_colors == 8){
+            result.division(nb_colors * 2 - 5);
+        }else if(nb_colors == 11){
+            result.division(nb_colors * 2 - 8);
+        }else if(nb_colors == 12){
+            result.division(nb_colors * 2 - 7);
+        }
         return result;
     }
 
