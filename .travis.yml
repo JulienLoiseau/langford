@@ -27,7 +27,7 @@ addons:
   sonarcloud:
     organization: "langford_godfrey"
     token:
-      secure: SONAR_TOKEN
+      secure: $SONAR_TOKEN
 script:
   # other script steps might be done before running the actual analysis
   - sonar-scanner
