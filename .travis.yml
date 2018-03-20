@@ -7,9 +7,9 @@ before_install:
   - sudo pip install codecov
 install: 
   # C++14
-  - sudo apt-get install -qq g++-5
+  #- sudo apt-get install -qq g++-5
   # Codecov
-  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-5 90
+  #- sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-5 90
 compiler:
   - clang
   - gcc
@@ -19,8 +19,7 @@ script:
   - cmake .. && make
   - make test
    # Codecov
-  - ../get_code_cov
-  - codecov
+  - find ../ -name "*.hpp" -exec gcov {} \;
 after_success:
   # Codecov
   - bash <(curl -s https://codecov.io/bash)
