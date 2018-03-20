@@ -19,7 +19,15 @@ script:
   - cmake -DCOVERAGE=ON .. && make
   - make test
    # Codecov
-  - find ../ -name "*.cpp" -exec gcov {} \;
+  - find ../ -name "*.cpp" -exec gcov {} \; -exec echo "{} done" \;
 after_success:
   # Codecov
   - bash <(curl -s https://codecov.io/bash)
+addons:
+  sonarcloud:
+    organization: "langford_godfrey"
+    token:
+      secure: SONAR_TOKEN
+script:
+  # other script steps might be done before running the actual analysis
+  - sonar-scanner
