@@ -28,7 +28,6 @@ class instance {
     using task_t = task<type_t, 6, nb_colors, nb_colors * 2>;
     using big_int = big_integer<type_t, 6>;
 
-private:
     big_int result;
 
 public:

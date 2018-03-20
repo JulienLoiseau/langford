@@ -36,7 +36,6 @@ class big_integer{
     const static size_t size_base = word_size / 2;
     const static long long base = (1LL << size_base);
 
-private:
     type_t array_[dim];
 
     //size_t used_words_;
@@ -45,8 +44,8 @@ private:
 public:
 
     HOST_DEVICE explicit big_integer():
-            number_words_(1),
-            room_per_word_(1)
+            room_per_word_(1),
+            number_words_(1)
     {
         std::fill(std::begin(array_),std::end(array_),0);
     }

@@ -2,7 +2,7 @@
 
 #include "instance.hpp"
 
-int main(int argc, char *argv[]) {
+int main() {
     instance<8, long long> t;
     auto res = t.solve();
     std::cout << res << std::endl;

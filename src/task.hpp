@@ -39,7 +39,6 @@ class task{
         const int64_t gray_gpu = (1LL << size_gray) + 1;
 #endif
 
-private:
     int sign_;
     int evaluation_[nb_cubes];
     int terms_[nb_colors];
@@ -132,9 +131,8 @@ public:
         assert(index > 1);
 
         bool must_multiply = true;
-        int max1, max2;
-
-        max2 = nb_colors;
+        //int max1, max2;
+        //max2 = nb_colors;
 
         evaluation_[index] *= -1;
 
