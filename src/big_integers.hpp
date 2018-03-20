@@ -134,9 +134,12 @@ public:
                 array_[i] *= val;
             }
 
-            if(fabs(val) < 32){
+            if(val < 0){
+                val *= -1;
+            }
+            if(val < 32){
                 room_per_word_ += 5;
-            }else if(fabs(val) < 64){
+            }else if(val < 64){
                 room_per_word_ += 6;
             }else{
                 room_per_word_ += 7;
