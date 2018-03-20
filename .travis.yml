@@ -15,13 +15,6 @@ install:
 compiler:
   - clang
   - gcc
-script:
-  - mkdir build
-  - cd build
-  - cmake -DCOVERAGE=ON .. && make
-  - make test
-   # Codecov
-  - find ../ -name "*.cpp" -exec gcov {} \; -exec echo "{} done" \;
 after_success:
   # Codecov
   - bash <(curl -s https://codecov.io/bash)
@@ -31,7 +24,14 @@ addons:
     token:
       secure: $SONAR_TOKEN
 script:
-  # other script steps might be done before running the actual analysis
+  - mkdir build
+  - cd build
+  - cmake -DCOVERAGE=ON .. && make
+  - make test
+   # Codecov
+  - find ../ -name "*.cpp" -exec gcov {} \; -exec echo "{} done" \;
+  # sonarqube
+  - build-wrapper-linux-x86-64 --out-dir sq_output make clean all
   - sonar-scanner
 cache:
   directories:
