@@ -19,7 +19,7 @@ script:
   - cmake -DCOVERAGE=ON .. && make
   - make test
    # Codecov
-  - find ../ -name "*.hpp" -exec gcov {} \;
+  - find ../ -name "*.cpp" -exec gcov {} \;
 after_success:
   # Codecov
   - bash <(curl -s https://codecov.io/bash)
