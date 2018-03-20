@@ -2,7 +2,7 @@ project (gtests)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-add_subdirectory(googletest-master)
+add_subdirectory(googletest)
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
