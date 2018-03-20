@@ -32,6 +32,7 @@ script:
   - find ../ -name "*.cpp" -exec gcov {} \; -exec echo "{} done" \;
   # sonarqube
   - build-wrapper-linux-x86-64 --out-dir sq_output make clean all
+  - cd ../
   - sonar-scanner
 cache:
   directories:
