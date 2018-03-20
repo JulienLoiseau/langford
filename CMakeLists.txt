@@ -11,4 +11,4 @@ add_subdirectory(gtests)
 # Main executable
 add_executable(langford_godfrey
         src/big_integers.hpp
-        src/main.cpp src/gray.h src/main.hpp src/task.hpp src/initial_data.hpp)
+        src/main.cpp src/gray.hpp src/task.hpp src/instance.hpp)

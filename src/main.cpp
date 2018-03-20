@@ -1,15 +1,10 @@
 #include <iostream>
 
-#include "big_integers.hpp"
-#include "task.hpp"
+#include "instance.hpp"
 
-int main(int argc, char* argv[]) {
-    task<long long, 6> t;
-    t.compute();
-    auto res = t.get_result();
-    std::cout<<res<<std::endl;
-    bool ok = res.division((nb_colors>>1)*3-1);
-    assert(ok == true);
-    std::cout<<res<<std::endl;
+int main(int argc, char *argv[]) {
+    instance<15, long long> t;
+    auto res = t.solve();
+    std::cout << res << std::endl;
     return 0;
 }

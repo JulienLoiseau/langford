@@ -72,8 +72,8 @@ namespace {
 
         std::ostringstream output;
         std::ostringstream result;
-        result << (nadd*nadd) ;
+        result << (nadd * nadd);
         output << a;
-        EXPECT_EQ(output.str(),result.str());
+        EXPECT_EQ(output.str(), result.str());
     }
 }
