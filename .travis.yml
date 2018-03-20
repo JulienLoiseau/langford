@@ -16,7 +16,7 @@ compiler:
 script:
   - mkdir build
   - cd build
-  - cmake .. && make
+  - cmake -DCOVERAGE .. && make
   - make test
    # Codecov
   - find ../ -name "*.hpp" -exec gcov {} \;
