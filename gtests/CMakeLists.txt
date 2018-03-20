@@ -1,6 +1,5 @@
 project (gtests)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
 add_subdirectory(googletest)
 
 

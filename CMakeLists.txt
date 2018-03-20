@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.9)
 include(GoogleTest)
 project(langford_godfrey)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
-if(COVERAGE)
+
+if(ENABLE_COVERAGE EQUAL ON)
+    include(CodeCoverage)
     add_definitions( -fprofile-arcs -ftest-coverage )
-    link_libraries( gcov )
-endif(COVERAGE)
+    target_link_libraries(langford_godfrey gcov)
+
+endif()
 
 enable_testing()
 
