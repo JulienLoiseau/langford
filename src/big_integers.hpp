@@ -47,7 +47,7 @@ public:
             room_per_word_(1),
             number_words_(1)
     {
-        std::fill(std::begin(array_),std::end(array_),0);
+        std::fill(array_,array_+dim,0);
     }
 
     ~big_integer() = default;
@@ -61,7 +61,7 @@ public:
     {
         number_words_ = 1;
         room_per_word_ = 1;
-        std::fill(std::begin(array_),std::end(array_),0);
+        std::fill(array_,array_+dim,0);
     }
 
     /**
