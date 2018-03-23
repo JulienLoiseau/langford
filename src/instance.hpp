@@ -24,6 +24,7 @@ class instance {
     using type_t = T;
 
     const static size_t nb_colors = NC;
+    const static long long total_tasks = 1LL << (nb_colors*2-4);
 
     using task_t = task<type_t, 6, nb_colors, nb_colors * 2>;
     using big_int = big_integer<type_t, 6>;
@@ -40,9 +41,16 @@ public:
      * @return
      */
     big_int &solve() {
-        task_t t;
-        t.compute();
-        result = t.get_result();
+
+#pragma omp parallel for
+        for(long long i = 0 ; i < total_tasks; ++i) {
+            task_t t(i);
+            t.compute();
+            // Add up to result
+#pragma omp critical
+            result.add_big_integer(t.get_result());
+        }
+
         if(nb_colors == 3){
             result.division(nb_colors * 2 - 4);
         }else if(nb_colors == 4){

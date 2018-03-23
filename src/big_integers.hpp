@@ -38,7 +38,6 @@ class big_integer{
 
     type_t array_[dim];
 
-    //size_t used_words_;
     size_t room_per_word_;
     size_t number_words_;
 public:
