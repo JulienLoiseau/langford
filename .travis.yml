@@ -27,7 +27,7 @@ script:
   - mkdir build
   - cd build
   - cmake -DCOVERAGE=ON .. && make
-  - make test
+  #- make test
    # Codecov
   - find ../ -name "*.cpp" -exec gcov {} \; -exec echo "{} done" \;
   # sonarqube
